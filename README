@@ -1,0 +1,179 @@
+本系统主要依赖于django 框架，同时边缘服务器初始化的时候还使用django-rq,异步任务队列，使用salt-ssh 调用salt 初始化model，初始化边缘设备，然后
+成功后，改model 会回调web系统
+http://uwsgi.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+
+#SSH 第一次连接不再询问
+vim /etc/ssh/ssh_config
+StrictHostKeyChecking no
+
+
+
+CREATE SCHEMA `ops` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+
+yum -y install epel-release gcc python-crypto openssl openssl-devel nginx supervisor wget python-pip
+rpm -ivh https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+yum -y install mysql-community-server
+grep 'temporary password' /var/log/mysqld.log
+(mysql_secure_installation 初始化密码)
+yum -y install salt-master salt-api salt-ssh MySQL-python uwsgi uwsgi-plugin-python redis
+systemctl enable mysqld
+systemctl enable supervisord
+systemctl enable nginx
+systemctl enable salt-master
+systemctl enable salt-api
+systemctl enable uwsgi
+systemctl enable rsyncd
+systemctl enable redis
+
+pip install --upgrade pip && pip install pyinotify && pip install pyOpenSSL && pip install --upgrade pyOpenSSL
+pip install django
+pip install salt
+pip install django-suit
+pip install django-rq
+
+#pip install Celery==3.1.17
+#pip install django-celery
+#pip install uwsgi   #need
+
+#requirements.txt
+
+systemctl start salt-api
+systemctl start mysqld
+systemctl start supervisord
+systemctl start nginx
+systemctl start salt-master
+systemctl start rsyncd
+systemctl start redis
+
+#systemctl start uwsgi
+
+#防火墙
+firewall-cmd --permanent --zone=public --add-port=4505-4506/tcp
+firewall-cmd --reload
+
+setenforce 0
+sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
+
+
+SUPERVISOR方案
+vim /etc/nginx/nginx.conf
+user root;
+worker_processes 4;
+
+vim /etc/nginx/conf.d/ops_nginx.conf
+# the upstream component nginx needs to connect to
+upstream django {
+    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+    server 127.0.0.1:8000;
+    server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+    server 127.0.0.1:8002;
+    server 127.0.0.1:8003;
+    keepalive 60;
+}
+
+# configuration of the server
+####nginx
+server {
+    # the port your site will be served on
+    listen      8088;
+    # the domain name it will serve for
+    server_name _; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+    proxy_set_header Host $host;
+    # Django media
+    location /media  {
+        expires 30d;
+        alias /migu/ops/media;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        expires 30d;
+        alias /migu/ops/static; # your Django project's static files - amend as required
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        #uwsgi_pass  django;
+        #include     /etc/nginx/uwsgi_params;
+        proxy_pass  http://django;
+        #include uwsgi_params;
+        #uwsgi_read_timeout 10;
+    }
+}
+
+#supervisor
+vim /etc/supervisord.d/ops.ini
+[program:ops]
+command=python -O /migu/ops/manage.py runserver 127.0.0.1:80%(process_num)02d
+process_name=%(program_name)s_%(process_num)02d
+numprocs=4
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/%(program_name)s.log
+user=root
+
+
+
+UWSGI 方案
+
+# mysite_nginx.conf
+
+# the upstream component nginx needs to connect to
+upstream django {
+    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+    server 127.0.0.1:8000; # for a web port socket (we'll use this first)
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on
+    listen      8088;
+    # the domain name it will serve for
+    server_name _; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+
+    # Django media
+    location /media  {
+        expires 30d;
+        alias /path/to/your/mysite/media;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        expires 30d;
+        alias /path/to/your/mysite/static; # your Django project's static files - amend as required
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        include uwsgi_params;
+        uwsgi_pass  django;
+        #uwsgi_read_timeout 10;
+    }
+}
+
+
+
+
+
+
+
+
+
+/usr/sbin/uwsgi --ini /xx/ops/uwsgi.ini
+
+ln -s /xx/ops/soft_conf/supervisor_ops_rq.ini /etc/supervisord.d/
+ln -s /xx/ops/soft_conf/supervisor_ops.ini /etc/supervisord.d/
+ln -s /xx/ops/soft_conf/nginx_ops.conf /etc/nginx/conf.d/
+
+vim /etc/crontab
+*/2 * * * * root /usr/bin/curl  http://127.0.0.1:8088/cdnapp/refreshmanager/refresh/  > /dev/null 2>&1
+*/2 * * * * root /usr/bin/curl  http://127.0.0.1:8088/cdnapp/refreshmanager/refreshprefetch/  > /dev/null 2>&1
+*/2 * * * * root /usr/bin/curl  http://127.0.0.1:8088/cdnapp/refreshmanager/prefetch/  > /dev/null 2>&1
+*/2 * * * * root /usr/bin/curl  http://127.0.0.1:8088/cdnapp/taskmanager/changestatus/ > /dev/null 2>&1
