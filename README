@@ -86,12 +86,12 @@ server {
     # Django media
     location /media  {
         expires 30d;
-        alias /migu/ops/media;  # your Django project's media files - amend as required
+        alias /xx/ops/media;  # your Django project's media files - amend as required
     }
 
     location /static {
         expires 30d;
-        alias /migu/ops/static; # your Django project's static files - amend as required
+        alias /xx/ops/static; # your Django project's static files - amend as required
     }
 
     # Finally, send all non-media requests to the Django server.
@@ -107,7 +107,7 @@ server {
 #supervisor
 vim /etc/supervisord.d/ops.ini
 [program:ops]
-command=python -O /migu/ops/manage.py runserver 127.0.0.1:80%(process_num)02d
+command=python -O /xx/ops/manage.py runserver 127.0.0.1:80%(process_num)02d
 process_name=%(program_name)s_%(process_num)02d
 numprocs=4
 autostart=true
