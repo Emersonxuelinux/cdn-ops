@@ -2,22 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a92519d-e866-45b7-8427-0c4eec1c3eed" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/README" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/10.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/11.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/12.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/13.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/14.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/15.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/17.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/18.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/3.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/4.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/5.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/6.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ops_image/7.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,8 +17,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="576">
-                <caret line="24" column="83" lean-forward="true" selection-start-line="24" selection-start-column="83" selection-end-line="24" selection-end-column="83" />
+              <first_editor relative-caret-position="720">
+                <caret line="30" column="4" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -195,8 +179,8 @@
       </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="576">
-            <caret line="24" column="83" lean-forward="true" selection-start-line="24" selection-start-column="83" selection-end-line="24" selection-end-column="83" />
+          <first_editor relative-caret-position="720">
+            <caret line="30" column="4" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
             <folding />
           </first_editor>
           <second_editor />
