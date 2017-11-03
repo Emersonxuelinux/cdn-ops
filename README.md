@@ -3,6 +3,9 @@
     成功后, 会回调web系统；域名下发生效以及刷新预加载等任务都差不多原理;
 ![image3](https://github.com/xieyugui/cdn-ops/raw/master/ops_image/ops.png)
 
+# api在线文档
+![image3](https://github.com/xieyugui/cdn-ops/raw/master/ops_image/api.png)
+
 # 用户管理
 ![image3](https://github.com/xieyugui/cdn-ops/raw/master/ops_image/user.png)
 
